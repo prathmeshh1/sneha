@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sneha Disale - Fashion Designer</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #fdfcfb; /* mild off-white base */
+      overflow-x: hidden;
+      color: #333;
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+    }
+
+    .hero {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #333;
+      position: relative;
+    }
+
+    .hero-content {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      border-radius: 20px;
+      padding: 3rem;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .profile-image {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      margin: 0 auto 2rem;
+      background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: white;
+      border: 4px solid rgba(255, 255, 255, 0.6);
+      animation: pulse 2s infinite;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-image img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .initials {
+      display: none;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 3rem;
+      color: white;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #333;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+      opacity: 0.8;
+    }
+
+    .section {
+      padding: 4rem 2rem;
+      background: rgba(255, 255, 255, 0.98);
+      margin: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+      animation: slideIn 0.8s ease-out;
+    }
+
+    .section h2 {
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .experience-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+
+    .experience-card {
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      color: white;
+      padding: 2rem;
+      border-radius: 15px;
+      transform: translateY(20px);
+      opacity: 0;
+      animation: cardSlideIn 0.8s ease-out forwards;
+      transition: transform 0.3s ease;
+    }
+
+    .experience-card:hover {
+      transform: translateY(-10px) scale(1.02);
+    }
+
+    .experience-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .experience-card .company {
+      font-weight: bold;
+      color: #fffde7;
+      margin-bottom: 0.5rem;
+    }
+
+    .experience-card .duration {
+      opacity: 0.8;
+      margin-bottom: 1rem;
+    }
+
+    .skills-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      margin: 2rem 0;
+    }
+
+    .skill-tag {
+      background: linear-gradient(45deg, #fbc2eb, #a6c1ee);
+      color: #333;
+      padding: 0.8rem 1.5rem;
+      border-radius: 25px;
+      font-weight: bold;
+      transform: scale(0.8);
+      opacity: 0;
+      animation: skillPop 0.6s ease-out forwards;
+    }
+
+    .education-card {
+      background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+      color: #333;
+      padding: 2rem;
+      border-radius: 15px;
+      text-align: center;
+      margin: 2rem 0;
+    }
+
+    .contact-info {
+      text-align: center;
+      background: linear-gradient(135deg, #ff9a9e, #fcb69f);
+      color: #333;
+      padding: 2rem;
+      border-radius: 15px;
+      margin: 2rem 0;
+    }
+
+    .floating-shapes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .three-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes cardSlideIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes skillPop {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .section {
+        margin: 1rem;
+        padding: 2rem 1rem;
+      }
+
+      .experience-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="three-container" id="three-container"></div>
+
+  <div class="container">
+    <section class="hero">
+      <div class="hero-content">
+        <div id="profileImage" class="profile-image" aria-label="Profile image or initials">
+          <img id="avatar" src="./sneha_photo.jpeg" alt="Sneha Disale"
+            onerror="this.onerror=null; this.style.display='none'; document.getElementById('initials').style.display='flex';" />
+          <div id="initials" class="initials">SD</div>
+        </div>
+        <h1>Sneha Disale</h1>
+        <p>Fashion Designer & Creative Consultant</p>
+        <p>Transforming Ideas into Beautiful Fashion</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>About Me</h2>
+      <p style="font-size: 1.1rem; line-height: 1.8; text-align: center; max-width: 800px; margin: 0 auto;">
+        A passionate fashion designer with comprehensive industry experience. I've completed internships at Cotton King, worked with luxury boutiques, and have hands-on experience in all departments of the fashion industry. My expertise spans from customer handling to stitching, making me a versatile fashion consultant ready to bring creativity and professionalism to your team.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Professional Experience</h2>
+      <div class="experience-grid">
+        <div class="experience-card" style="animation-delay: 0.2s;">
+          <h3>Internship Trainee</h3>
+          <div class="company">Cotton King</div>
+          <div class="duration">June 2025 - Present (4 months)</div>
+          <p>Gained comprehensive knowledge of all industry departments. Developed expertise in fashion production, quality control, and industry operations.</p>
+        </div>
+
+        <div class="experience-card" style="animation-delay: 0.4s;">
+          <h3>Assistant</h3>
+          <div class="company">Myntra</div>
+          <div class="duration">June 2025 (1 month)</div>
+          <p>Participated in New York Fashion Week and attended Lakme Fashion Week. Organized fashion shows in Government College, showcasing event management skills.</p>
+        </div>
+
+        <div class="experience-card" style="animation-delay: 0.6s;">
+          <h3>Fashion Consultant</h3>
+          <div class="company">Luxury Boutique</div>
+          <div class="duration">Freelance Experience</div>
+          <p>Specialized in customer consultation, personal styling, and custom stitching services. Built strong client relationships through expert fashion advice.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Core Skills</h2>
+      <div class="skills-container">
+        <div class="skill-tag" style="animation-delay: 0.1s;">Store Management</div>
+        <div class="skill-tag" style="animation-delay: 0.2s;">Digital Illustration</div>
+        <div class="skill-tag" style="animation-delay: 0.3s;">Fashion Consulting</div>
+        <div class="skill-tag" style="animation-delay: 0.4s;">Hand Drafting</div>
+        <div class="skill-tag" style="animation-delay: 0.5s;">Visual Merchandising</div>
+        <div class="skill-tag" style="animation-delay: 0.6s;">Customer Relations</div>
+        <div class="skill-tag" style="animation-delay: 0.7s;">Custom Stitching</div>
+        <div class="skill-tag" style="animation-delay: 0.8s;">Fashion Design</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Education</h2>
+      <div class="education-card">
+        <h3>Associate's Degree in Fashion/Apparel Design</h3>
+        <p><strong>NIFD Institute of Fashion Design Limited</strong></p>
+        <p>June 2023 - June 2025</p>
+        <p><strong>Grade: A+</strong></p>
+        <p>Specialized in Hand Drafting, Visual Merchandising, and comprehensive fashion design principles.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Get In Touch</h2>
+      <div class="contact-info">
+        <h3>Ready to collaborate?</h3>
+        <p><strong>Location:</strong> Pune, Maharashtra, India</p>
+        <p><strong>LinkedIn:</strong> 27 connections and growing</p>
+        <p><strong>Specialization:</strong> Fashion Design, Consulting & Store Management</p>
+        <p style="margin-top: 1rem; font-style: italic;">
+          "Let's create something beautiful together in the world of fashion!"
+        </p>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // === Three.js Scene Setup ===
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.getElementById('three-container').appendChild(renderer.domElement);
+
+    // === Lighting ===
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    scene.add(ambientLight);
+    const pointLight = new THREE.PointLight(0xffffff, 0.8);
+    pointLight.position.set(10, 10, 10);
+    scene.add(pointLight);
+
+    // === Background Fashion‑themed Floating Shapes ===
+    const colors = [0xff9a9e, 0xfecfef, 0xfad0c4, 0xfbc2eb, 0xcdb4db];
+    const shapes = [];
+
+    for (let i = 0; i < 25; i++) {
+      const type = Math.floor(Math.random() * 4);
+      let geometry;
+      switch (type) {
+        case 0:
+          geometry = new THREE.SphereGeometry(0.8, 16, 16);
+          break;
+        case 1:
+          geometry = new THREE.TorusKnotGeometry(0.5, 0.15, 100, 16);
+          break;
+        case 2:
+          geometry = new THREE.IcosahedronGeometry(0.7, 0);
+          break;
+        default:
+          geometry = new THREE.BoxGeometry(1, 1, 1);
+          break;
+      }
+
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      const material = new THREE.MeshStandardMaterial({
+        color: color,
+        emissive: color,
+        emissiveIntensity: 0.3,
+        metalness: 0.5,
+        roughness: 0.4,
+        transparent: true,
+        opacity: 0.6
+      });
+
+      const mesh = new THREE.Mesh(geometry, material);
+
+      mesh.position.set(
+        (Math.random() - 0.5) * 40,
+        (Math.random() - 0.5) * 40,
+        (Math.random() - 0.5) * 40
+      );
+
+      mesh.rotation.set(
+        Math.random() * Math.PI,
+        Math.random() * Math.PI,
+        Math.random() * Math.PI
+      );
+
+      mesh.userData = {
+        rotationSpeed: {
+          x: (Math.random() - 0.5) * 0.01,
+          y: (Math.random() - 0.5) * 0.01
+        },
+        floatSpeed: Math.random() * 0.006 + 0.001,
+        floatRange: (Math.random() * 0.5) + 0.5
+      };
+
+      scene.add(mesh);
+      shapes.push(mesh);
+    }
+
+    camera.position.z = 20;
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      shapes.forEach((s, i) => {
+        s.rotation.x += s.userData.rotationSpeed.x;
+        s.rotation.y += s.userData.rotationSpeed.y;
+
+        // floating up/down
+        s.position.y += Math.sin(Date.now() * s.userData.floatSpeed + i) * 0.002;
+      });
+
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>
